@@ -1,42 +1,45 @@
 import requests as req
 from flask import Flask
-from flask import render_template
 from flask import jsonify
-
 import datetime
 
 app = Flask(__name__)
 
-@app.route('/canteen/')
-def menu():
-    resp = req.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen")
+@app.route('/alameda/')
+def get_buildings():
+    resp = req.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/spaces/2448131360897")
     data = resp.json()
-    #improvment of return needed
     print(data)
     return jsonify(data)
 
 
-@app.route('/canteen/today')
-def today_menu():
-    current_date = datetime.datetime.today()
-    resp = req.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen")
+@app.route('/rooms/<id>')
+def get_room(id):
+    uri = "https://fenix.tecnico.ulisboa.pt/api/fenix/v1/spaces/" + str(id)
+    resp = req.get(uri)
     data = resp.json()
-    for d in data:
-        if d['day'] == str(current_date.strftime('%e/%m/%Y')).strip():
-            print(d)
-            return d
+
+    room_name = data['name']
+    floor_id = data['parentSpace']['id']
+    uri_b = "https://fenix.tecnico.ulisboa.pt/api/fenix/v1/spaces/" + str(floor_id)
+    resp_b = req.get(uri_b)
+    data_b = resp_b.json()
+    building_id = data_b['parentSpace']['id']
+    building_name = data_b['parentSpace']['name']
+
+    print("ID:{} ROOM:{} B_ID:{} B_NAME:{}".format(id, room_name, building_id, building_name))
+    print("-----------------------------------------------------------------------------")
+    print(data['events'])
+    return jsonify(data['events'])
 
 
-@app.route('/canteen/tomorrow')
-def tomorrow_menu():
-    tomorrow_date = datetime.datetime.today() + datetime.timedelta(days=1)
-    resp = req.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen")
+@app.route('/building/')
+def get_building():
+    resp = req.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/spaces/2448131361101")
     data = resp.json()
-    for d in data:
-        if d['day'] == str(tomorrow_date.strftime('%e/%m/%Y')).strip():
-            print(d)
-            return d
-
+    print(data)
+    #return jsonify(data)
+    return jsonify(data['parentSpace']['name'])
 
 if __name__ == '__main__':
     app.run()

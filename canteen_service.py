@@ -2,7 +2,6 @@ import requests as req
 from flask import Flask
 from flask import render_template
 from flask import jsonify
-
 import datetime
 
 app = Flask(__name__)
@@ -11,7 +10,6 @@ app = Flask(__name__)
 def menu():
     resp = req.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen")
     data = resp.json()
-    #improvment of return needed
     print(data)
     return jsonify(data)
 
