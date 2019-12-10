@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+   <body>
+      <table border = 1>
+            <tr>
+               <th>day</th>
+                <th>start</th>
+                <th>end</th>
+                <th>course</th>
+            </tr>
+
+          {% for d in dt %}
+          <tr>
+              <td>{{ d.day}}</td>
+              <td>{{ d.start}}</td>
+              <td>{{ d.end}}</td>
+              <td>{{ d.course}}</td>
+          </tr>
+        {% endfor %}
+
+      </table>
+   </body>
+</html>

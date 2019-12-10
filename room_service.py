@@ -13,7 +13,7 @@ def get_buildings():
     return jsonify(data)
 
 
-@app.route('/rooms/<id>')
+@app.route('/room/<id>')
 def get_room(id):
     uri = "https://fenix.tecnico.ulisboa.pt/api/fenix/v1/spaces/" + str(id)
     resp = req.get(uri)
@@ -29,7 +29,7 @@ def get_room(id):
 
     print("ID:{} ROOM:{} B_ID:{} B_NAME:{}".format(id, room_name, building_id, building_name))
     print("-----------------------------------------------------------------------------")
-    print(data['events'])
+    print(data['events'][10])
     return jsonify(data['events'])
 
 
