@@ -1,9 +1,8 @@
 import requests as req
-import pickle
 from flask import Flask, render_template, request
 from flask import jsonify
-import datetime
 import secretariatDB
+import json
 
 
 app = Flask(__name__)
@@ -21,16 +20,14 @@ def result():
         name = request.form.get('name')
         description = request.form.get('description')
         opening_hours = request.form.get('opening_hours')
-        obj = db.addSecretariat(location, name, description, opening_hours)
-        return jsonify(obj)
+        data = json.dumps(db.addSecretariat(location, name, description, opening_hours).__dict__)
+        return data
 
 
-@app.route('/secretariat/<id>')
+@app.route('/secretariat/<int:id>')
 def get_secretariat(id):
-    resp = jsonify(db.showSecretariat(id))
-    resp.status_code = 200
-    return resp
-
+    data = json.dumps(db.showSecretariat(id).__dict__)
+    return data
 
 
 if __name__ == '__main__':
