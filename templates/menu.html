@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+   <body>
+   <p>Canteen menu</p>
+      <table border = 1>
+
+          {% for d in dt %}
+          <tr>
+              <td>{{ d.day}}</td>
+              <td>{{ d.meal}}</td>
+          </tr>
+        {% endfor %}
+
+      </table>
+   </body>
+</html>

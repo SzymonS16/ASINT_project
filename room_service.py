@@ -1,17 +1,9 @@
 import requests as req
 from flask import Flask
 from flask import jsonify
-import datetime
+import json
 
 app = Flask(__name__)
-
-@app.route('/alameda/')
-def get_buildings():
-    resp = req.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/spaces/2448131360897")
-    data = resp.json()
-    print(data)
-    return jsonify(data)
-
 
 @app.route('/room/<id>')
 def get_room(id):
@@ -26,20 +18,14 @@ def get_room(id):
     data_b = resp_b.json()
     building_id = data_b['parentSpace']['id']
     building_name = data_b['parentSpace']['name']
+    campus = data_b['topLevelSpace']['name']
 
-    print("ID:{} ROOM:{} B_ID:{} B_NAME:{}".format(id, room_name, building_id, building_name))
+    print("ID:{} ROOM:{} B_ID:{} B_NAME:{} CAMPUS:{}".format(id, room_name, building_id, building_name, campus))
     print("-----------------------------------------------------------------------------")
     print(data['events'][10])
-    return jsonify(data['events'])
+    return jsonify(data)
 
 
-@app.route('/building/')
-def get_building():
-    resp = req.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/spaces/2448131361101")
-    data = resp.json()
-    print(data)
-    #return jsonify(data)
-    return jsonify(data['parentSpace']['name'])
 
 if __name__ == '__main__':
     app.run()
