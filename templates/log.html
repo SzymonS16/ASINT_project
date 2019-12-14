@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+   <body>
+   <p>Log</p>
+      <table border = 1>
+          <tr>
+              <th>timestamp</th>
+              <th>service</th>
+              <th>method</th>
+              <th>resource</th>
+              <th>status</th>
+          </tr>
+
+          {% for l in logs %}
+          <tr>
+              <td>{{ l.timestamp}}</td>
+              <td>{{ l.service}}</td>
+              <td>{{ l.method}}</td>
+              <td>{{ l.resource}}</td>
+              <td>{{ l.status}}</td>
+          </tr>
+        {% endfor %}
+
+      </table>
+   </body>
+</html>

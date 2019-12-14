@@ -44,8 +44,11 @@ def private_page():
 
         if (resp.status_code == 200):
             r_info = resp.json()
-            print( r_info)
-            return render_template("privPage.html", username=loginName, name=r_info['name'])
+            print(r_info)
+            if loginName == 'ist195137':
+                return render_template("privPage.html", username=loginName, name=r_info['name'])
+            else:
+                return render_template("robak.html", username=loginName, name=r_info['name'])
         else:
             return "oops"
 
@@ -81,10 +84,10 @@ def userAuthenticated():
         userToken = r_token['access_token']
 
         #now the user has done the login
-        return jsonify(r_info)
+        #return jsonify(r_info)
         #we show the returned infomration
         #but we could redirect the user to the private page
-        #return redirect('/private') #comment the return jsonify....
+        return redirect('/private') #comment the return jsonify....
     else:
         return 'oops'
 
