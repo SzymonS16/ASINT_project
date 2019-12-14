@@ -28,4 +28,7 @@ class secretariatDB:
 
     def editSecretariat(self, scr_id, location, name, description, opening_hours):
         self.scr[scr_id] = secretariat.Secretariat(scr_id, location, name, description, opening_hours)
+        f = open('scr_dump' + self.name, 'wb')
+        pickle.dump(self.scr, f)
+        f.close()
         return self.scr[scr_id]

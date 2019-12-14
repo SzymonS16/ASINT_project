@@ -40,7 +40,7 @@ def userAuthenticated():
         return "Bad request"
 
 
-@app.route('/admin/panel')
+@app.route('/admin/panel/')
 def adminPanel():
         if Glogin=='admin' and Gpassword=='admin':
             return render_template('adminPage.html')
@@ -82,8 +82,11 @@ def editSecretariatResult():
                 name = request.form.get('name')
                 description = request.form.get('description')
                 opening_hours = request.form.get('opening_hours')
-                dbSecretariat.editSecretariat(id, location, name, description, opening_hours)
-            return "Object edited"
+                if dbSecretariat.editSecretariat(id, location, name, description, opening_hours):
+                    dbLog.addLog(service, 'PUT', 'secretariat', 200)
+                else:
+                    dbLog.addLog(service, 'PUT', 'secretariat', 304)
+            return redirect('/admin/panel/secretariat')
         else:
             return "Authentication failure"
 
