@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, Response
 import logDB
+import secretariatDB
 from flask import jsonify
 import json
 
@@ -11,6 +12,7 @@ service = 'admin'
 app = Flask(__name__)
 
 dbLog = logDB.logDB("log_DB")
+dbSecretariat = secretariatDB.secretariatDB("scr_DB")
 
 
 @app.route('/admin/')
@@ -58,7 +60,8 @@ def adminLog():
 @app.route('/admin/panel/secretariat')
 def adminSecretariat():
         if Glogin=='admin' and Gpassword=='admin':
-            return render_template('adminSecretariat.html')
+            scrs = dbSecretariat.listAllSecretariats()
+            return render_template('adminSecretariat.html', scrs=scrs)
         else:
             return "Authentication failure"
 
