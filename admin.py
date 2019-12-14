@@ -65,11 +65,27 @@ def adminSecretariat():
         else:
             return "Authentication failure"
 
+@app.route('/admin/panel/secretariat/<id>')
+def editSecretariat(id):
+        if Glogin=='admin' and Gpassword=='admin':
+            scr = dbSecretariat.showSecretariat(int(id))
+            return render_template('adminSecretariatEdit.html', scr=scr)
+        else:
+            return "Authentication failure"
 
-
-
-
-
+@app.route('/admin/panel/secretariat/edit', methods = ['POST'])
+def editSecretariatResult():
+        if Glogin=='admin' and Gpassword=='admin':
+            if request.method == 'POST' and request.form.get('_method') == 'PUT':
+                id = int(request.form.get('id'))
+                location = request.form.get('location')
+                name = request.form.get('name')
+                description = request.form.get('description')
+                opening_hours = request.form.get('opening_hours')
+                dbSecretariat.editSecretariat(id, location, name, description, opening_hours)
+            return "Object edited"
+        else:
+            return "Authentication failure"
 
 
 

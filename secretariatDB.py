@@ -25,3 +25,7 @@ class secretariatDB:
 
     def listAllSecretariats(self):
         return list(self.scr.values())
+
+    def editSecretariat(self, scr_id, location, name, description, opening_hours):
+        self.scr[scr_id] = secretariat.Secretariat(scr_id, location, name, description, opening_hours)
+        return self.scr[scr_id]
