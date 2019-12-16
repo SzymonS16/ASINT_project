@@ -44,6 +44,7 @@ def get_secretariat(id):
 def get_menu():
     resp = req.get("http://127.0.0.1:5000/canteen/")
     data = resp.json()
+    print(data)
     return render_template('menu.html', dt=data)
 
 @app.route('/api/canteen/today')

@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request, redirect, Response
+import requests as req
 import logDB
-import secretariatDB
-from flask import jsonify
-import json
+
 
 Glogin = None
 Gpassword = None
@@ -12,7 +11,6 @@ service = 'admin'
 app = Flask(__name__)
 
 dbLog = logDB.logDB("log_DB")
-dbSecretariat = secretariatDB.secretariatDB("scr_DB")
 
 
 @app.route('/admin/')
@@ -60,37 +58,33 @@ def adminLog():
 @app.route('/admin/panel/secretariat')
 def adminSecretariat():
         if Glogin=='admin' and Gpassword=='admin':
-            scrs = dbSecretariat.listAllSecretariats()
-            return render_template('adminSecretariat.html', scrs=scrs)
+            uri = "http://127.0.0.1:5000/secretariat/"
+            resp = req.get(uri)
+            data = resp.json()
+            return render_template('adminSecretariat.html', scrs=data)
         else:
             return "Authentication failure"
 
-@app.route('/admin/panel/secretariat/<id>')
+
+@app.route('/admin/panel/secretariat/add')
+def addSecretariat():
+        if Glogin=='admin' and Gpassword=='admin':
+            return render_template('add_secretariat.html')
+        else:
+            return "Authentication failure"
+
+
+@app.route('/admin/panel/secretariat/edit/<id>')
 def editSecretariat(id):
         if Glogin=='admin' and Gpassword=='admin':
-            scr = dbSecretariat.showSecretariat(int(id))
-            return render_template('adminSecretariatEdit.html', scr=scr)
+            uri = "http://127.0.0.1:5000/secretariat/" + str(id)
+            resp = req.get(uri)
+            data = resp.json()
+            print(data)
+            return render_template('adminSecretariatEdit.html', scr=data)
         else:
             return "Authentication failure"
-
-@app.route('/admin/panel/secretariat/edit', methods = ['POST'])
-def editSecretariatResult():
-        if Glogin=='admin' and Gpassword=='admin':
-            if request.method == 'POST' and request.form.get('_method') == 'PUT':
-                id = int(request.form.get('id'))
-                location = request.form.get('location')
-                name = request.form.get('name')
-                description = request.form.get('description')
-                opening_hours = request.form.get('opening_hours')
-                if dbSecretariat.editSecretariat(id, location, name, description, opening_hours):
-                    dbLog.addLog(service, 'PUT', 'secretariat', 200)
-                else:
-                    dbLog.addLog(service, 'PUT', 'secretariat', 304)
-            return redirect('/admin/panel/secretariat')
-        else:
-            return "Authentication failure"
-
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='127.0.0.1', port=5005)

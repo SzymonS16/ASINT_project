@@ -18,6 +18,13 @@ def room():
     return str(data)
 
 
+@app.route('/secretariat', methods=['POST'])
+def secretariat():
+    if request.method == 'POST':
+        data = request.data
+        print(str(data))
+    return str(data)
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host='127.0.0.1', port=5003)
     #app.run(host='192.168.3.144', port=8080)

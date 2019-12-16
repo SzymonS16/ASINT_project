@@ -1,5 +1,15 @@
 <!doctype html>
 <title>PRIVATE PAGE</title>
 <body>
-  username - {{ username }} {{name}}
-  </body>
+ <h4>User - {{ username }} {{name}}</h4>
+  <p><a href="/showSecret">Show secret</a></p>
+
+<h4>Validate user</h4>
+ <form action="/userValidation" method="POST">
+  Secret: <input type="text" name="secret"><br>
+  <br>
+  <input type="submit" value="Submit">
+</form>
+
+
+</body>

@@ -13,9 +13,14 @@
             oReq.open("POST", "/room");
             oReq.setRequestHeader("Content-type", "text/plain");
             oReq.send(content);
-            window.location.replace("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/spaces/2448131363667");
+            if (content.length > 5)
+            {
+              window.location.replace("http://127.0.0.1:5001/api/room/" + content);
+            }
+            else {
+              window.location.replace("http://127.0.0.1:5001/api/secretariat/" + content);
+            }
         }
-
 
       let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
       scanner.addListener('scan', function(content) {
