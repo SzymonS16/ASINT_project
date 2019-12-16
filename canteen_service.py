@@ -1,16 +1,18 @@
 import requests as req
 from flask import Flask
-from flask import render_template
 from flask import jsonify
 import datetime
+import logDB
 
 app = Flask(__name__)
+dbLog = logDB.logDB("log_DB")
+service = 'canteen_service'
 
-@app.route('/canteen/')
+@app.route('/canteen')
 def menu():
     resp = req.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen")
     data = resp.json()
-    print(data)
+    dbLog.addLog(service, 'GET', 'menu list', 200)
     return jsonify(data)
 
 
@@ -21,7 +23,7 @@ def today_menu():
     data = resp.json()
     for d in data:
         if d['day'] == str(current_date.strftime('%e/%m/%Y')).strip():
-            print(d)
+            dbLog.addLog(service, 'GET', 'menu - today', 200)
             return d
 
 
@@ -32,9 +34,9 @@ def tomorrow_menu():
     data = resp.json()
     for d in data:
         if d['day'] == str(tomorrow_date.strftime('%e/%m/%Y')).strip():
-            print(d)
+            dbLog.addLog(service, 'GET', 'menu - tomorrow', 200)
             return d
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='127.0.0.1', port=5003)

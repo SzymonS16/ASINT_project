@@ -5,35 +5,29 @@ import secretariatDB
 import logDB
 import json
 
-
 app = Flask(__name__)
+
 db = secretariatDB.secretariatDB("scr_DB")
 dbLog = logDB.logDB("log_DB")
 
-service = 'secretariat'
+service = 'secretariat_service'
 
-
-@app.route('/secretariat/')
+@app.route('/secretariat')
 def get_secretariat_list():
     secretariats = []
     scrs = db.listAllSecretariats()
     for scr in scrs:
         secretariats.append(scr.__dict__)
-    print(secretariats)
+    dbLog.addLog(service, 'GET', 'secretariat list', 200)
     return json.dumps(secretariats)
 
 
 @app.route('/secretariat/<id>')
 def get_secretariat(id):
     data = json.dumps(db.showSecretariat(int(id)).__dict__)
+    dbLog.addLog(service, 'GET', 'secretariat', 200)
     return data
 
-###wyjazd
-'''
-@app.route('/secretariat/add')
-def add_secretariat():
-    return render_template('add_secretariat.html')
-'''
 
 @app.route('/secretariat/add_result', methods = ['POST'])
 def result():
@@ -43,8 +37,8 @@ def result():
         description = request.form.get('description')
         opening_hours = request.form.get('opening_hours')
         data = json.dumps(db.addSecretariat(location, name, description, opening_hours).__dict__)
+        dbLog.addLog(service, 'POST', 'secretariat', 200)
         return data
-
 
 
 @app.route('/secretariat/edit_result', methods = ['POST'])
@@ -63,6 +57,5 @@ def editSecretariatResult():
             return "Error! Resource not edited!"
 
 
-
 if __name__ == '__main__':
-    app.run()
+    app.run(host='127.0.0.1', port=5002)

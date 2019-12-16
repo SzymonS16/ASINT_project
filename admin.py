@@ -7,13 +7,12 @@ Glogin = None
 Gpassword = None
 
 service = 'admin'
-
 app = Flask(__name__)
 
 dbLog = logDB.logDB("log_DB")
 
 
-@app.route('/admin/')
+@app.route('/admin')
 def admin():
     return render_template("loginForm.html")
 
@@ -38,7 +37,7 @@ def userAuthenticated():
         return "Bad request"
 
 
-@app.route('/admin/panel/')
+@app.route('/admin/panel')
 def adminPanel():
         if Glogin=='admin' and Gpassword=='admin':
             return render_template('adminPage.html')
@@ -58,7 +57,7 @@ def adminLog():
 @app.route('/admin/panel/secretariat')
 def adminSecretariat():
         if Glogin=='admin' and Gpassword=='admin':
-            uri = "http://127.0.0.1:5000/secretariat/"
+            uri = "http://127.0.0.1:5002/secretariat"
             resp = req.get(uri)
             data = resp.json()
             return render_template('adminSecretariat.html', scrs=data)
@@ -77,7 +76,7 @@ def addSecretariat():
 @app.route('/admin/panel/secretariat/edit/<id>')
 def editSecretariat(id):
         if Glogin=='admin' and Gpassword=='admin':
-            uri = "http://127.0.0.1:5000/secretariat/" + str(id)
+            uri = "http://127.0.0.1:5002/secretariat/" + str(id)
             resp = req.get(uri)
             data = resp.json()
             print(data)
@@ -87,4 +86,4 @@ def editSecretariat(id):
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5005)
+    app.run(host='127.0.0.1', port=5006)

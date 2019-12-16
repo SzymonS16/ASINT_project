@@ -22,7 +22,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return render_template("loginPage.html", username=loginName)
+    #return render_template("loginPage.html", username=loginName)
+    return redirect('/private')
 
 @app.route('/private')
 def private_page():
@@ -79,7 +80,6 @@ def userAuthenticated():
 def get_user():
     if request.method == 'POST':
         secret = request.form.get('secret')
-        print(secret)
 
     #this page can only be accessed by a authenticated username
     if loginName == False:
@@ -129,6 +129,5 @@ def showSecret():
             return "OPS"
 
 
-
 if __name__ == '__main__':
-    app.run()
+    app.run(host='127.0.0.1', port=5004)
