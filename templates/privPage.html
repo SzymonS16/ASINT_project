@@ -1,8 +1,12 @@
 <!doctype html>
 <title>PRIVATE PAGE</title>
 <body>
- <h4>User - {{ username }} {{name}}</h4>
-  <p><a href="/showSecret">Show secret</a></p>
+
+<h2>User - {{ username }} {{name}}</h2>
+
+<h4><a href="/scanner">QR scanner</a></h4>
+
+<h4><a href="/showSecret">Show secret</a></h4>
 
 <h4>Validate user</h4>
  <form action="/userValidation" method="POST">

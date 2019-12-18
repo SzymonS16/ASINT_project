@@ -1,6 +1,4 @@
-import requests as req
 from flask import Flask, render_template, request, abort
-from flask import jsonify
 import secretariatDB
 import logDB
 import json

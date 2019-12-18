@@ -33,6 +33,7 @@ def today_menu():
         if d['day'] == str(current_date.strftime('%e/%m/%Y')).strip():
             dbLog.addLog(service, 'GET', 'menu - today', 200)
             return d
+    abort(404, description="Resource not found")
 
 
 @app.route('/canteen/tomorrow')
@@ -47,6 +48,7 @@ def tomorrow_menu():
         if d['day'] == str(tomorrow_date.strftime('%e/%m/%Y')).strip():
             dbLog.addLog(service, 'GET', 'menu - tomorrow', 200)
             return d
+    abort(404, description="Resource not found")
 
 
 @app.errorhandler(404)

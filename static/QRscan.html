@@ -9,10 +9,6 @@
     <script type="text/javascript">
 
       function getRoom(content) {
-            var oReq = new XMLHttpRequest();
-            oReq.open("POST", "/room");
-            oReq.setRequestHeader("Content-type", "text/plain");
-            oReq.send(content);
             if (content.length > 5)
             {
               window.location.replace("http://127.0.0.1:5000/api/room/" + content);

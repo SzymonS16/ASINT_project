@@ -59,6 +59,8 @@ def adminSecretariat():
         if Glogin=='admin' and Gpassword=='admin':
             uri = "http://127.0.0.1:5002/secretariat"
             resp = req.get(uri)
+            if resp.status_code != 200:
+                abort(resp.status_code)
             data = resp.json()
             return render_template('adminSecretariat.html', scrs=data)
         else:
@@ -78,6 +80,8 @@ def editSecretariat(id):
         if Glogin=='admin' and Gpassword=='admin':
             uri = "http://127.0.0.1:5002/secretariat/" + str(id)
             resp = req.get(uri)
+            if resp.status_code != 200:
+                abort(resp.status_code)
             data = resp.json()
             print(data)
             return render_template('adminSecretariatEdit.html', scr=data)

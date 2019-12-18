@@ -1,8 +1,7 @@
 from flask import Flask, session
-from flask import redirect
+from flask import redirect, abort
 from flask import render_template
 from flask import request
-from flask import jsonify
 import requests
 import logDB
 import os
@@ -40,7 +39,6 @@ def private_page():
     if not session.get('login'):
         dbLog.addLog(service, 'POST', 'FENIX-auth', 401)
         #if the user is not authenticated
-
         redPage = fenixLoginpage % (client_id, redirect_uri)
         # the app redirecte the user to the FENIX login page
         return redirect(redPage)
@@ -58,7 +56,7 @@ def private_page():
             r_info = resp.json()
             return render_template("privPage.html", username=loginName, name=r_info['name'])
         else:
-            return "oops"
+            abort(404, description="Resource not found")
 
 @app.route('/userAuth')
 def userAuthenticated():
@@ -83,30 +81,18 @@ def userAuthenticated():
         userToken = r_token['access_token']
         session['login'] = loginName
         session['token'] = userToken
-
-        '''
-        global loginName
-        loginName = r_info['username']
-        global userToken
-        userToken = r_token['access_token']
-        global userSecret
-        userSecret = code
-        '''
-
         return redirect('/private')
     else:
-        return 'oops'
+        abort(404, description="Resource not found")
 
 
 @app.route('/userValidation', methods=['POST'])
 def get_user():
     if request.method == 'POST':
         secret = request.form.get('secret')
-
     #this page can only be accessed by a authenticated username
     if not session.get('login'):
         #if the user is not authenticated
-
         redPage = fenixLoginpage % (client_id, redirect_uri)
         # the app redirecte the user to the FENIX login page
         return redirect(redPage)
@@ -114,23 +100,13 @@ def get_user():
         #if the user is authenticated
         loginName = session['login']
         # we can retrieve a fenix access token
-        '''
-        payload = {'client_id': client_id, 'client_secret': clientSecret, 'redirect_uri': redirect_uri, 'code': secret, 'grant_type': 'authorization_code'}
-        response = requests.post(fenixacesstokenpage, params=payload)
-        if (response.status_code == 200):
-            # if we receive the token
-            r_token = response.json()
-        '''
-        ### receive user data
-        #params = {'access_token': r_token['access_token']}
         params = {'access_token': secret}
         resp = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person", params=params)
         if (resp.status_code == 200):
             r_info = resp.json()
-            print(r_info)
             return render_template("userValidation.html", username=loginName, name=r_info['name'], photo=r_info['photo'])
         else:
-            return "oops"
+            abort(404, description="Resource not found")
 
 
 @app.route('/showSecret')
@@ -138,7 +114,6 @@ def showSecret():
     #this page can only be accessed by a authenticated username
     if not session.get('login'):
         #if the user is not authenticated
-
         redPage = fenixLoginpage % (client_id, redirect_uri)
         # the app redirecte the user to the FENIX login page
         return redirect(redPage)
@@ -149,7 +124,31 @@ def showSecret():
             userToken = session['token']
             return render_template("secret.html", secret=userToken)
         else:
-            return "OPS"
+            abort(401, description="Unauthorized")
+
+@app.route('/scanner')
+def qr_scanner():
+    if not session.get('login'):
+        #if the user is not authenticated
+        redPage = fenixLoginpage % (client_id, redirect_uri)
+        # the app redirecte the user to the FENIX login page
+        return redirect(redPage)
+    else:
+        #if the user is authenticated
+        return redirect("static/QRscan.html")
+
+
+@app.errorhandler(401)
+def auth_error(error):
+    return render_template('401.html'), 401
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('500.html'), 500
 
 
 if __name__ == '__main__':
