@@ -1,5 +1,5 @@
 import requests as req
-from flask import Flask
+from flask import Flask, render_template, abort
 from flask import jsonify
 import json
 import logDB
@@ -11,12 +11,17 @@ dbLog = logDB.logDB("log_DB")
 service = 'room_service'
 resource = 'room'
 
+
 @app.route('/room/<id>')
 def get_room(id):
     uri = "https://fenix.tecnico.ulisboa.pt/api/fenix/v1/spaces/" + str(id)
     resp = req.get(uri)
     data = resp.json()
-    dbLog.addLog(service, 'GET', resource, 200)
+    if data:
+        dbLog.addLog(service, 'GET', resource, 200)
+    else:
+        dbLog.addLog(service, 'GET', resource, 404)
+        abort(404, description="Resource not found")
     return jsonify(data)
 
 
@@ -26,7 +31,22 @@ def get_floor(id):
     uri = "https://fenix.tecnico.ulisboa.pt/api/fenix/v1/spaces/" + str(floor_id)
     resp = req.get(uri)
     data = resp.json()
+    if data:
+        dbLog.addLog(service, 'GET', resource, 200)
+    else:
+        dbLog.addLog(service, 'GET', resource, 404)
+        abort(404, description="Resource not found")
     return jsonify(data)
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('500.html'), 500
 
 
 if __name__ == '__main__':

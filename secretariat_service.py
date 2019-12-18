@@ -1,5 +1,5 @@
 import requests as req
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, abort
 from flask import jsonify
 import secretariatDB
 import logDB
@@ -24,7 +24,12 @@ def get_secretariat_list():
 
 @app.route('/secretariat/<id>')
 def get_secretariat(id):
-    data = json.dumps(db.showSecretariat(int(id)).__dict__)
+    scr = db.showSecretariat(int(id))
+    if scr:
+        data = json.dumps(scr.__dict__)
+    else:
+        dbLog.addLog(service, 'GET', 'secretariat', 404)
+        abort(404, description="Resource not found")
     dbLog.addLog(service, 'GET', 'secretariat', 200)
     return data
 
@@ -54,7 +59,17 @@ def editSecretariatResult():
             return "Resource edited!"
         else:
             dbLog.addLog(service, 'PUT', 'secretariat', 304)
-            return "Error! Resource not edited!"
+            return "Resource not edited!"
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('500.html'), 500
 
 
 if __name__ == '__main__':

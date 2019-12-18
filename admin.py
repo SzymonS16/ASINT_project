@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, Response
+from flask import Flask, render_template, request, redirect, abort
 import requests as req
 import logDB
 
@@ -31,10 +31,10 @@ def userAuthenticated():
             return redirect('/admin/panel')
         else:
             dbLog.addLog(service, request.method, 'adminPanel', 401)
-            return "Authentication failure"
+            abort(401, description="Unauthorized")
     else:
         dbLog.addLog(service, request.method, 'adminPanel', 400)
-        return "Bad request"
+        abort(400, description="Bad request")
 
 
 @app.route('/admin/panel')
@@ -42,7 +42,7 @@ def adminPanel():
         if Glogin=='admin' and Gpassword=='admin':
             return render_template('adminPage.html')
         else:
-            return "Authentication failure"
+            abort(401, description="Unauthorized")
 
 
 @app.route('/admin/panel/log')
@@ -51,7 +51,7 @@ def adminLog():
             logs = dbLog.listAllLogs()
             return render_template('log.html', logs=logs)
         else:
-            return "Authentication failure"
+            abort(401, description="Unauthorized")
 
 
 @app.route('/admin/panel/secretariat')
@@ -62,7 +62,7 @@ def adminSecretariat():
             data = resp.json()
             return render_template('adminSecretariat.html', scrs=data)
         else:
-            return "Authentication failure"
+            abort(401, description="Unauthorized")
 
 
 @app.route('/admin/panel/secretariat/add')
@@ -70,7 +70,7 @@ def addSecretariat():
         if Glogin=='admin' and Gpassword=='admin':
             return render_template('add_secretariat.html')
         else:
-            return "Authentication failure"
+            abort(401, description="Unauthorized")
 
 
 @app.route('/admin/panel/secretariat/edit/<id>')
@@ -82,7 +82,24 @@ def editSecretariat(id):
             print(data)
             return render_template('adminSecretariatEdit.html', scr=data)
         else:
-            return "Authentication failure"
+            abort(401, description="Unauthorized")
+
+
+@app.errorhandler(400)
+def bad_request_error(error):
+    return render_template('400.html'), 400
+
+@app.errorhandler(401)
+def auth_error(error):
+    return render_template('401.html'), 401
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('500.html'), 500
 
 
 if __name__ == '__main__':

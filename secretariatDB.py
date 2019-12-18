@@ -21,7 +21,10 @@ class secretariatDB:
         return self.scr[scr_id]
 
     def showSecretariat(self, scr_id):
-        return self.scr[scr_id]
+        if scr_id >= len(self.scr):
+            return None
+        else:
+            return self.scr[scr_id]
 
     def listAllSecretariats(self):
         return list(self.scr.values())
