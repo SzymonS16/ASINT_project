@@ -30,7 +30,7 @@ def today_menu():
         dbLog.addLog(service, 'GET', 'menu - today', 404)
         abort(404, description="Resource not found")
     for d in data:
-        if d['day'] == str(current_date.strftime('%e/%m/%Y')).strip():
+        if d['day'] == str(current_date.strftime('%e/%#m/%Y')).strip():
             dbLog.addLog(service, 'GET', 'menu - today', 200)
             return d
     abort(404, description="Resource not found")
@@ -45,7 +45,7 @@ def tomorrow_menu():
         dbLog.addLog(service, 'GET', 'menu - tomorrow', 404)
         abort(404, description="Resource not found")
     for d in data:
-        if d['day'] == str(tomorrow_date.strftime('%e/%m/%Y')).strip():
+        if d['day'] == str(tomorrow_date.strftime('%e/%#m/%Y')).strip():
             dbLog.addLog(service, 'GET', 'menu - tomorrow', 200)
             return d
     abort(404, description="Resource not found")
